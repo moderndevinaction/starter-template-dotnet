@@ -11,12 +11,10 @@ az login
 SUB_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 RG_NAME=my-resource-group-name
 
-AZURE_CREDS=$(az ad sp create-for-rbac \
+az ad sp create-for-rbac \
     --name "starter-template-dotnet-ghaction" \
     --role contributor \
-    --scopes /subscriptions/$SUB_ID/resourceGroups/$RG_NAME)
-
-# Set the values into a GitHub secrets
-#gh secret set AZURE_CREDENTIALS  -b"$AZURE_CREDS" -R "moderndevinaction/starter-template-dotnet"
-
+    --scopes /subscriptions/$SUB_ID/resourceGroups/$RG_NAME \
+    --sdk-auth
+    
 ```
