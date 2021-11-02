@@ -11,7 +11,8 @@ on:
     branches:
       - main
     paths:
-      - './api/'
+      - 'Api/**'
+      - '.github/workflows/deployment.yaml'
 
 env:
   # Use docker.io for Docker Hub if empty
