@@ -1,10 +1,5 @@
 name: Build and Deploy
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 on:
   workflow_dispatch:
   push:
@@ -20,6 +15,8 @@ env:
   # github.repository as <account>/<repo>
   # IMAGE_NAME: ${{ github.repository }}
   IMAGE_NAME: moderndevinaction/mycompanyapi
+  RESOURCE_GROUP: mdia-dotnetstarter-test
+  LOCATION: canadacentral
 
 jobs:
   build:
@@ -64,3 +61,22 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy bicep
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.29.2
+          inlineScript: |
+            az group create -g ${{ env.RESOURCE_GROUP }} -l ${{ env.LOCATION }}
